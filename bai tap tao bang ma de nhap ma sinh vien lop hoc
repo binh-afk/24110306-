@@ -1,0 +1,186 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+public class SinhVien
+{
+    [Required]
+    [RegularExpression(@"^Nam Nữ$",
+        ErrorMessage = "GioiTinh must be Nam or Nữ")]
+    public string GioiTinh { get; set; }
+
+    [EmailAddress(ErrorMessage = "Invalid Email Address")]
+    public string Email { get; set; }
+
+    [Phone(ErrorMessage = "Invalid Phone Number")]
+    public string SoDienThoai { get; set; }
+
+    [Range(0, 10,
+        ErrorMessage = "Diem must be between 0 and 10")]
+    public double Diem { get; set; }
+
+    public List<ValidationResult> IsInvalid()
+    {
+        var valcontext = new ValidationContext(this);
+        var results = new List<ValidationResult>();
+
+        var kt = Validator.TryValidateObject(
+            this,
+            valcontext,
+            results,
+            true
+        );
+
+        if (!kt)
+        {
+            return results;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    public partial class frmQuanLySinhVien : Form
+    {
+        List<LopHoc> listLopHoc = new List<LopHoc>();
+        List<SinhVien> listSinhVien = new List<SinhVien>();
+        void LoadData()
+        {
+            // dữ liệu lớp
+            listLopHoc.Add(new LopHoc
+            {
+                MaLop = "CSE0001",
+                TenLop = "Lập trình C#"
+            });
+
+            listLopHoc.Add(new LopHoc
+            {
+                MaLop = "CSE0002",
+                TenLop = "Cơ sở dữ liệu"
+            });
+
+            listLopHoc.Add(new LopHoc
+            {
+                MaLop = "CSE0003",
+                TenLop = "Mạng máy tính"
+            });
+
+            listLopHoc.Add(new LopHoc
+            {
+                MaLop = "CSE0004",
+                TenLop = "Hệ điều hành"
+            });
+
+            listLopHoc.Add(new LopHoc
+            {
+                MaLop = "CSE0005",
+                TenLop = "Trí tuệ nhân tạo"
+            });
+
+            // sinh viên
+            listSinhVien.Add(new SinhVien
+            {
+                MaSV = "SV000001",
+                HoTen = "Nguyễn Văn A",
+                MaLop = "CSE0001",
+                NgaySinh = new DateTime(2000, 1, 1),
+                GioiTinh = "Nam",
+                Email = "nguyenvana@email.com"
+            });
+
+            listSinhVien.Add(new SinhVien
+            {
+                MaSV = "SV000002",
+                HoTen = "Trần Thị B",
+                MaLop = "CSE0002",
+                NgaySinh = new DateTime(2000, 2, 2),
+                GioiTinh = "Nữ",
+                Email = "tranthib@email.com"
+            });
+        }
+        private void txtMaSV_Leave(object sender, EventArgs e)
+        {
+            SinhVien sv = listSinhVien.Find(x => x.MaSV == txtMaSV.Text);
+
+            if (sv != null)
+            {
+                txtHoTen.Text = sv.HoTen;
+                txtDienThoai.Text = sv.SoDienThoai;
+                txtEmail.Text = sv.Email;
+                numDiem.Value = (decimal)sv.Diem;
+                cboLop.SelectedValue = sv.MaLop;
+
+                if (sv.GioiTinh == "Nam")
+                {
+                    rdoNam.Checked = true;
+                }
+                else
+                {
+                    rdoNu.Checked = true;
+                }
+            }
+        }
+        private void txtMaSV_Enter(object sender, EventArgs e)
+        {
+            txtMaSV.SelectAll();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+        public partial class frmQuanLySinhVien : Form
+        {
+            // 1. Danh sách
+            List<LopHoc> listLopHoc = new List<LopHoc>();
+            List<SinhVien> listSinhVien = new List<SinhVien>();
+
+            // 2. Load dữ liệu
+            void LoadData()
+            {
+                // dữ liệu lớp
+                // dữ liệu sinh viên
+            }
+
+            // 3. Form Load
+            private void frmQuanLySinhVien_Load(object sender, EventArgs e)
+            {
+                LoadData();
+                txtTongSo.ReadOnly = true;
+                cboLop.DataSource = listLopHoc;
+            }
+
+            // 4. Constructor
+            public frmQuanLySinhVien()
+            {
+                InitializeComponent();
+            }
+
+            // 5. Các sự kiện nhập Mã SV
+            private void txtMaSV_Enter(object sender, EventArgs e)
+            {
+                txtMaSV.SelectAll();
+            }
+
+            private void txtMaSV_Leave(object sender, EventArgs e)
+            {
+                SinhVien sv = listSinhVien.Find(x => x.MaSV == txtMaSV.Text);
+
+                if (sv != null)
+                {
+                    txtHoTen.Text = sv.HoTen;
+                    txtDienThoai.Text = sv.SoDienThoai;
+                    txtEmail.Text = sv.Email;
+                    numDiem.Value = (decimal)sv.Diem;
+                    cboLop.SelectedValue = sv.MaLop;
+
+                    if (sv.GioiTinh == "Nam")
+                        rdoNam.Checked = true;
+                    else
+                        rdoNu.Checked = true;
+                }
+            }
+
+            // 6. Các nút Thêm / Sửa / Xóa...
+        }
+
+    }
